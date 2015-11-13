@@ -1,7 +1,12 @@
 ---
 layout: default
 ---
-<section id="editMessage_screen" class="expand">
+<section id="welcome_screen" class="expand">
+  <h1>
+    ORTClip
+  </h1>
+</section>
+<section id="editMessage_screen" class="expand" style="display:none;">
   <div class="flex">
     <div class="flex-body">
       <div class="textarea-container">
@@ -16,14 +21,14 @@ layout: default
           <div>
             <span>
               <i class="fa fa-send"></i>
-              <p>Send</p>
+              Send
             </span>
           </div>
         </button><button id="button_clear">
           <div>
             <span>
               <i class="fa fa-eraser"></i>
-              <p>Clear</p>
+              Clear
             </span>
           </div>
         </button>
@@ -67,7 +72,7 @@ layout: default
           <div>
             <span>
               <i class="fa fa-clipboard"></i>
-              <p>Copy</p>
+              Copy
             </span>
           </div>
         </button>

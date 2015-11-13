@@ -4,8 +4,12 @@
   <body class="expand">
     <article class="expand">
       <section class="expand">
-        {% include header.html %}
-        {{ content }}
+        <div id="header">
+          {% include header.html %}
+        </div>
+        <div id="main">
+          {{ content }}
+        </div>
         {% include footer.html %}
       </section>
     </article>

@@ -11,6 +11,32 @@
   height: 100%;
 }
 
+#header {
+  height: 16%;
+  width: 100%;
+
+  h1 {
+    display: inline-block;
+    color: #FFF;
+    background-color: #910;
+    font-family: "Arial Black", Gadget, sans-serif;
+    font-size: 172%;
+    padding: 0 .25em;
+  }
+}
+
+#main {
+  height: 84%;
+}
+
+#welcome_screen {
+  h1 {
+    font-family: "Arial Black", Gadget, sans-serif;
+    font-size: 480%;
+    text-align: center;
+  }
+}
+
 #sendingMessage_screen {
   h1 {
     font-size: 320%;
@@ -29,7 +55,8 @@
 
 #sendMessage_screen {
   h1 {
-    font-size: 320%;
+    font-size: 256%;
+    line-height: 100%;
     font-weight: 100;
     text-align: center;
   }
@@ -41,7 +68,7 @@
     #QRCode {
       display: inline-block;
       vertical-align: middle;
-      padding: 1.5em;
+      padding: 2em;
     }
     input {
       display: inline-block;
@@ -80,7 +107,7 @@
           display: block;
           width: 86%;
           height: 80%;
-          padding: .25em;
+          padding: .5em;
           margin: 0 auto;
           border: solid .25em #C80;
           border-radius: .5em;
@@ -103,35 +130,38 @@
       button {
         width: 100%;
         border: none;
-        background-color: #333;
-        color: #FFF;
+        background-color: #FFF;
 
         div {
           display: table;
-          width: 64%;
+          width: 72%;
           height: 64%;
           margin: 0 auto;
+          background-color: #333;
+          color: #FFF;
+          border: solid 1px #AAA;
+          border-radius: 1em;
 
           span {
             display: table-cell;
             vertical-align: middle;
-            font-size: 208%;
-            letter-spacing: .1em;
+            font-size: 172%;
+            letter-spacing: .05em;
+            padding: 0 .25em;
 
             i {
               display: inline-block;
-              font-size: 144%;
-            }
-
-            p {
-              display: inline-block;
-              overflow: hidden;
+              font-size: 172%;
+              padding: .25em;
+              vertical-align: middle;
             }
           }
         }
       }
       button:active {
-        background-color: #89E;
+        div {
+          background-color: #89E;
+        }
       }
       button#pro {
         div {
@@ -139,11 +169,17 @@
         }
       }
     }
+
     .flex-menu-1 {
       button {
         height: 100%;
+
+        div {
+          height: 30%;
+        }
       }
     }
+
     .flex-menu-2 {
       button {
         height: 50%;
@@ -170,11 +206,28 @@
       width: 100%;
       height: 76%;
     }
+
     .flex-menu {
       -webkit-order: 2;
       order: 2;
       width: 100%;
       height: 24%;
+
+      .flex-menu-1 {
+        button {
+          height: 100%;
+          width: 100%;
+
+          div {
+            width: 48%;
+            span {
+              p {
+                margin-right: 1em;
+              }
+            }
+          }
+        }
+      }
 
       .flex-menu-2 {
         button {
