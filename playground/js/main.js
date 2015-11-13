@@ -22,16 +22,34 @@ function createHash(length) {
   .join('');
 }
 
+function copyClipboard() {
+  var textarea_recieve = document.querySelector('#textarea_recieve');
+  textarea_recieve.select();
+
+  try {
+    document.execCommand('copy');
+
+    if ( document.selection ) {
+      document.selection.empty();
+    }
+    else if ( window.getSelection ) {
+      window.getSelection().removeAllRanges();
+    }
+  }
+  catch(error) {
+    console.error(error);
+  }
+}
+
 function sendMessage(options, ws) {
   return function (event) {
     if(!options.message && !options.hash) {
       return;
     }
 
-    const HASH = options.hash || createHash(8);
-    const MODE = options.hash ? 'GET' : 'SET';
-    const DATA = [MODE, HASH, options.message].join(' ');
-
+    var HASH = options.hash || createHash(8);
+    var MODE = options.hash ? 'GET' : 'SET';
+    var DATA = [MODE, HASH, options.message].join(' ');
 
     document.querySelector("#hidden_hash").value = HASH;
     ws.send(DATA);
@@ -42,36 +60,61 @@ function recieveMessage(options, ws) {
   return function(event) {
     var response = event.data;
 
-    if(!options.hash) {
-      const id = parseInt(response);
+    document.querySelector("#editMessage_screen").style.display = "none";
 
+    var id = parseInt(response);
+
+    if(!options.hash) {
       if(id < 0) {
-        response = "Please wait...";
-        setTimeout(sendMessage(options, ws), 10000);
+        setTimeout(sendMessage(options, ws), 12000);
       }
       else {
-        const HASH = document.querySelector("#hidden_hash").value;
+        var HASH = document.querySelector("#hidden_hash").value;
         response = zeroFill(response) + HASH;
       }
     }
 
-    document.querySelector("#uri").innerHTML = response;
-    document.querySelector("#send_screen").style.display = "none";
-    document.querySelector("#sent_screen").style.display = "block";
+    if(options.isSender && id < 0) {
+      document.querySelector("#sendingMessage_screen").style.display = "block";
+      return;
+    }
+
+    if(!options.isSender) {
+      document.querySelector("#textarea_recieve").value = response;
+      document.querySelector("#recieveMessage_screen").style.display = "block";
+      document.querySelector("#recieveMessage_screen").className += " animate-fade-in";
+      return;
+    }
+
+    var base_url = window.location.href;
+    var uri = base_url.replace(/^.*\/\//, '') + "#" + response;
+    var qr = new QRCode(document.querySelector("#QRCode"), {
+      text:   uri,
+      text:   "http://jindo.dev.naver.com/collie",
+      width:  160,
+      height: 160
+    });
+
+    document.querySelector("#input_uri").value = uri;
+    document.querySelector("#sendingMessage_screen").style.display = "none";
+    document.querySelector("#sendMessage_screen").style.display = "block";
+    document.querySelector("#sendMessage_screen").className += " animate-fade-in";
   }
 }
 
 function foo() {
   var options = {
-    hash:    null,
-    message: null
+    isSender: true,
+    hash:     null,
+    message:  null
   }
 
   if(window.location.hash === "") {
     options.message = document.querySelector("#textarea_message").value;
   }
   else {
-    const URI_HASH = window.location.hash.slice(1);
+    options.isSender = false;
+    var URI_HASH = window.location.hash.slice(1);
 
     options.message = parseInt(URI_HASH.slice(0, 4));
     options.hash    = URI_HASH.slice(4);
@@ -95,6 +138,7 @@ window.onload = function() {
     foo()
   }
 
+  button_copy.addEventListener("click", copyClipboard);
   button_send.addEventListener("click", foo);
   button_clear.addEventListener("click", clear);
 };
