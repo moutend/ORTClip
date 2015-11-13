@@ -13,9 +13,13 @@ function zeroFill(n) {
 function createHash(length) {
   return new Array(length)
   .fill(0)
-  .map(() => 33 + Math.random() * 78)
-  .map((v) => String.fromCharCode(v))
-  .join('')
+  .map(function() {
+    return 33 + Math.random() * 78;
+  })
+  .map(function(v) {
+    return String.fromCharCode(v);
+  })
+  .join('');
 }
 
 function sendMessage(options, ws) {
@@ -83,7 +87,7 @@ function clear() {
   document.querySelector("#textarea_message").value = "";
 }
 
-window.onload = () => {
+window.onload = function() {
   var button_send  = document.querySelector("#button_send");
   var button_clear = document.querySelector("#button_clear");
 
