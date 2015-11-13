@@ -135,7 +135,19 @@ window.onload = function() {
   var button_clear = document.querySelector("#button_clear");
 
   if(window.location.hash) {
-    foo()
+    setTimeout(function() {
+      foo()
+      document.querySelector("#welcome_screen").style.display = "none";
+      document.querySelector("recieveMessage_screen").style.display = "block";
+      document.querySelector("recieveMessage_screen").className += " animate-fade-in";
+    }, 1000);
+  }
+  else {
+    setTimeout(function() {
+      document.querySelector("#welcome_screen").style.display = "none";
+      document.querySelector("#editMessage_screen").style.display = "block";
+      document.querySelector("#editMessage_screen").className += " animate-fade-in";
+    }, 1000);
   }
 
   button_copy.addEventListener("click", copyClipboard);
