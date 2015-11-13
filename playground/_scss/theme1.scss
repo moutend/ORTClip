@@ -1,16 +1,59 @@
 * {
-  font-family:  'Trebuchet MS','Helvetica', 'Hiragino Kaku Gothic Pro', Meiryo;
+  font-family: 'Open Sans Light', Helvetica, 'Hiragino Kaku Gothic Pro', Meiryo, Arial, sans-serif;
   line-height: 172%;
   margin: 0;
   padding: 0;
   text-decoration: none;
-  word-break: break-all;
-  word-wrap: break-word;
 }
+
 .expand {
   width: 100%;
   height: 100%;
 }
+
+#sendingMessage_screen {
+  h1 {
+    font-size: 320%;
+    font-weight: 100;
+    text-align: center;
+  }
+  div {
+    text-align: center;
+
+    #waiting {
+      display: inline-block;
+      font-size: 8em;
+    }
+  }
+}
+
+#sendMessage_screen {
+  h1 {
+    font-size: 320%;
+    font-weight: 100;
+    text-align: center;
+  }
+
+  #qrcode_and_url {
+    width: 100%;
+    text-align: center;
+
+    #QRCode {
+      display: inline-block;
+      vertical-align: middle;
+      padding: 1.5em;
+    }
+    input {
+      display: inline-block;
+      width: 64%;
+      padding: .125em .25em;
+      border: solid #777 .25em;
+      border-radius: .5em;
+      font-size: 256%;
+    }
+  }
+}
+
 .flex {
   display: -webkit-flex;
   display: flex;
@@ -31,20 +74,19 @@
       div {
         display: table-cell;
         vertical-align: middle;
+        height: 100%;
 
         textarea {
-          width: 90%;
+          display: block;
+          width: 86%;
           height: 80%;
           padding: .25em;
           margin: 0 auto;
-          border: solid 2px #555;
-          border-radius: .25em;
+          border: solid .25em #C80;
+          border-radius: .5em;
           font-family: "Source Code Pro", "Liberation Mono", Consolas, Courier, monospace, sans-serif;
           white-space: pre;
-        }
-        #textarea_message {
-          font-size: 272%;
-          letter-spacing: .125em;
+          font-size: 160%;
         }
       }
     }
@@ -55,40 +97,41 @@
     width: 16%;
     height: 100%;
 
-    .flex-menu-2 {
+    .flex-menu-1, .flex-menu-2 {
       height: 100%;
 
       button {
         width: 100%;
-        height: 50%;
         border: none;
-        background-color: #FFF;
+        background-color: #333;
+        color: #FFF;
 
         div {
           display: table;
           width: 64%;
           height: 64%;
           margin: 0 auto;
-          background-color: #579;
-          color: #FFF;
-          border-radius: 1em;
-          border: solid 3px #AAA;
 
           span {
             display: table-cell;
             vertical-align: middle;
-            text-transform: uppercase;
-            text-shadow: 0 0 .125em #000, 0 0 .25em rgba(0, 0, 0, 0.75);
-            font-size: 144%;
-            letter-spacing: .125em;
-            font-weight: bold;
+            font-size: 208%;
+            letter-spacing: .1em;
+
+            i {
+              display: inline-block;
+              font-size: 144%;
+            }
+
+            p {
+              display: inline-block;
+              overflow: hidden;
+            }
           }
         }
       }
       button:active {
-        div {
-          background-color: #89E;
-        }
+        background-color: #89E;
       }
       button#pro {
         div {
@@ -96,9 +139,27 @@
         }
       }
     }
+    .flex-menu-1 {
+      button {
+        height: 100%;
+      }
+    }
+    .flex-menu-2 {
+      button {
+        height: 50%;
+      }
+    }
   }
 }
 @media screen and (max-aspect-ratio: 4/3) {
+  #sendMessage_screen {
+    #qrcode_and_url {
+      input {
+        width: 86%;
+        font-size: 160%;
+      }
+    }
+  }
   .flex {
     -webkit-flex-direction: column;
     flex-direction: column;
@@ -122,6 +183,11 @@
 
           div {
             width: 86%;
+            span {
+              p {
+                margin-right: 1em;
+              }
+            }
           }
         }
       }
