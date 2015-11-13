@@ -3,7 +3,7 @@ encoding: UTF-8
 
 title: "ORTClip"
 description: "Send a message instantly, secretly."
-url: "https://moutend.github.io/ortclip-client/"
+url: "https://moutend.github.io/ORTClip/"
 
 markdown: kramdown
 permalink: pretty
