@@ -1,0 +1,18 @@
+timezone: Tokyo
+encoding: UTF-8
+
+title: "ORTClip"
+description: "Send a message instantly, secretly."
+url: "http://192.168.1.104:4000/"
+
+markdown: kramdown
+permalink: pretty
+
+sass:
+  sass_dir:  _scss
+  style:    :compressed
+
+exclude:
+  - "README.md"
+  - "Gemfile"
+  - "vendor"

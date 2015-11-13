@@ -1,0 +1,30 @@
+@keyframes fade-in {
+  0%   {display: none;  opacity: 0;}
+  1%   {display: block; opacity: 0;}
+  100% {display: block; opacity: 1;}
+}
+@-moz-keyframes fade-in {
+  0%   {display: none;  opacity: 0;}
+  1%   {display: block; opacity: 0;}
+  100% {display: block; opacity: 1;}
+}
+@-webkit-keyframes fade-in {
+  0%   {display: none;  opacity: 0;}
+  1%   {display: block; opacity: 0;}
+  100% {display: block; opacity: 1;}
+}
+
+@mixin fadeIn($d) {
+  animation-duration:         $d;
+  animation-name:             fade-in;
+  -moz-animation-duration:    $d;
+  -moz-animation-name:        fade-in;
+  -webkit-animation-duration: $d;
+  -webkit-animation-name:     fade-in;
+}
+
+.animate-fade-in {
+  display: block;
+  opacity: 1;
+  @include fadeIn(0.35s);
+}
