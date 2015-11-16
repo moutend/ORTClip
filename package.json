@@ -2,7 +2,7 @@
   "name": "ORTClip",
   "description": "Send a message instantly, secretly.",
   "author": "moutend <moutend@gmail.com>",
-  "licenses": "MIT",
+  "license": "MIT",
   "version": "0.1.0",
   "repository": {
     "type": "git",
