@@ -1,8 +1,13 @@
 {
   "name": "ORTClip",
   "description": "Send a message instantly, secretly.",
-  "version": "0.1.0",
   "author": "moutend <moutend@gmail.com>",
+  "licenses": "MIT",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moutend/ORTClip.git"
+  },
   "bugs": {
     "url": "https://github.com/moutend/ORTClip/issues"
   },
@@ -22,6 +27,7 @@
     "power-assert": "^1.0.0",
     "uglify-js": "^2.4.24"
   },
+  "main": "index.js",
   "files": [
     "package.json",
     "README.md",
@@ -34,13 +40,8 @@
     "websocket",
     "demo"
   ],
-  "licenses": "MIT",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/moutend/ORTClip-WebClient.git"
-  },
   "scripts": {
+    "start": "node index.js",
     "build": "npm run build-to5",
     "build-minify": "uglifyjs playground/js/main.js -o playground/js/main.min.js",
     "build-to5": "babel src --out-dir lib",
