@@ -1,0 +1,8 @@
+{
+  "name": "ORTClip Server",
+  "description": "Instant message server",
+  "repository": "https://github.com/moutend/ORTClip",
+  "logo": "http://node-js-sample.herokuapp.com/node.svg",
+  "keywords": ["node", "websocket", "pg"],
+  "image": "heroku/nodejs"
+}
