@@ -120,7 +120,7 @@ function foo() {
     options.hash    = URI_HASH.slice(4);
   }
 
-  var websocket_uri = "wss://murmuring-mountain-5009.herokuapp.com";
+  var websocket_uri = "wss://ortclip.herokuapp.com";
   var ws = new WebSocket(websocket_uri, 'clip-protocol');
   ws.addEventListener("open",    sendMessage(options, ws));
   ws.addEventListener("message", recieveMessage(options, ws));
