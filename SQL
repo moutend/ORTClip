@@ -1,0 +1,7 @@
+CREATE TABLE test_table (
+  id        int       UNIQUE,
+  hash      text      NOT NULL,
+  isUsing   boolean   NOT NULL,
+  message   text      NOT NULL,
+  timestamp timestamp NOT NULL
+);
