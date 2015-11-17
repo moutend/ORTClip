@@ -68,6 +68,7 @@ export default class Server {
           const HASH          = REQUEST_ARRAY[1];
           const MESSAGE       = REQUEST_ARRAY[2];
           const TIMESTAMP     = parseInt(+new Date() / 1000);
+          const table_name    = 'MESSAGE_TABLE';
 
           console_log(message.utf8Data);
 
@@ -78,13 +79,13 @@ export default class Server {
 
           if(CODE === 'SET') {
             const QUERY = [
-              'UPDATE test_table SET',
+              `UPDATE ${TABLE_NAME} SET`,
               'isUsing = True,',
               `hash = $$${HASH}$$,`,
               `timestamp = to_timestamp(${TIMESTAMP}),`,
               `message = $$${MESSAGE}$$`,
               'WHERE id = (',
-              '  SELECT id FROM test_table',
+              `  SELECT id FROM ${TABLE_NAME}`,
               '  WHERE isUsing = False',
               `  OR timestamp < to_timestamp(${TIMESTAMP - 90}) LIMIT 1`,
               ')'
@@ -97,7 +98,7 @@ export default class Server {
               }
 
               const Q = [
-                'SELECT id FROM test_table',
+                `SELECT id FROM ${TABLE_NAME}`,
                 `WHERE hash = $$${HASH}$$`
               ].join(' ');
 
