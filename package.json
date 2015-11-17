@@ -1,6 +1,9 @@
 {
   "name": "ORTClip",
   "description": "Send a message instantly, secretly.",
+  "engines": {
+    "node": "5.0.0"
+  },
   "author": "moutend <moutend@gmail.com>",
   "license": "MIT",
   "version": "0.1.0",
