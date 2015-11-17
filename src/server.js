@@ -15,7 +15,7 @@ export default class Server {
     let http = require('http');
     let server = http.createServer((request, response) => {
       response.writeHead(403);
-      response.end('403 Forbidden');
+      response.end('<h1>403 Forbidden</h1>');
     });
 
     function sendSQL(query) {
