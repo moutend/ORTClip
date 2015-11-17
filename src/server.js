@@ -120,7 +120,7 @@ export default class Server {
 
           if(CODE === 'GET') {
             const QUERY_FOR_GET = [
-              'SELECT message FROM test_table',
+              `SELECT message FROM ${TABLE_NAME}`,
               `WHERE id = $$${MESSAGE}$$ AND hash = $$${HASH}$$`
             ].join(' ');
 
