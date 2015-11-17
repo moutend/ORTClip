@@ -1,5 +1,5 @@
 CREATE TABLE test_table (
-  id        int       UNIQUE,
+  id        SERIAL    PRIMARY KEY,
   hash      text      NOT NULL,
   isUsing   boolean   NOT NULL,
   message   text      NOT NULL,
