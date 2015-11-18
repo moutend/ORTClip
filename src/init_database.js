@@ -34,7 +34,7 @@ const SQL = [
   "('',   FALSE,   '',      clock_timestamp());"
 ].join(' ');
 
-for(let n = 0; n < 10000; n++) {
+for(let n = 1; n < 10000; n++) {
   (() => {
     sendSQL(SQL)
     .then((result) => {

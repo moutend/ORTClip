@@ -99,7 +99,9 @@ export default class Server {
 
               const Q = [
                 `SELECT id FROM ${TABLE_NAME}`,
-                `WHERE hash = $$${HASH}$$`
+                `WHERE hash = $$${HASH}$$`,
+                `AND id = ${ID}`,
+                `AND isUsing = True`
               ].join(' ');
 
               return sendSQL(Q);
