@@ -78,7 +78,7 @@ export default class Server {
           }
 
           if(CODE === 'SET') {
-            const QUERY = [
+            const UPDATE_ROW = [
               `UPDATE ${TABLE_NAME} SET`,
               'isUsing = True,',
               `hash = $$${HASH}$$,`,
@@ -91,20 +91,19 @@ export default class Server {
               ')'
             ].join(' ');
 
-            sendSQL(QUERY)
+            sendSQL(UPDATE_ROW)
             .then((result) => {
               if(result.rowCount === 0) {
                 return -1;
               }
 
-              const Q = [
+              const GET_ID = [
                 `SELECT id FROM ${TABLE_NAME}`,
                 `WHERE hash = $$${HASH}$$`,
-                `AND id = ${ID}`,
                 `AND isUsing = True`
               ].join(' ');
 
-              return sendSQL(Q);
+              return sendSQL(GET_ID);
             })
             .then((result) => {
               if(result === -1) {
