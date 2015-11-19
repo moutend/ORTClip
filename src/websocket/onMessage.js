@@ -5,19 +5,29 @@ export default function handleMessage(connection, psql) {
     const TIMESTAMP  = parseInt(+new Date() / 1000);
     const TABLE_NAME = 'message_table';
 
+    let request = null;
     let response = {
       isOK: false,
       message: null
     };
 
     if(message.type === 'utf8') {
-      let request    = JSON.parse(message.utf8Data);
+      try {
+        request = JSON.parse(message.utf8Data);
+      }
+      catch(error) {
+        response.message = error;
+        Util.log(response.message);
+        connection.sendUTF(JSON.stringify(response));
+        return null;
+
+      }
 
       if(request.message.length > 1000) {
         response.message = 'The message should be less than 1000 chars';
         Util.log(response.message);
         connection.sendUTF(JSON.stringify(response));
-        return;
+        return null;
       }
 
      Util.log('Request is:', request, message.utf8Data);
