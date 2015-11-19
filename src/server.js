@@ -80,7 +80,7 @@ export default class Server {
             return;
           }
 
-          log(request);
+          log('Request is:', request, message.utf8Data);
 
           request.message = request.message.replace(/\$/g, '_$');
           request.hash    = request.hash.replace(/\$/g, '_$');
