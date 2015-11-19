@@ -1,11 +1,11 @@
 import pg from 'pg';
 import WebSocket from 'websocket';
 
-function console_log(...message) {
+function log(...message) {
   process.stdout.write(message.join(' ') + '\n');
 }
 
-function console_error(message) {
+function error(message) {
   process.stderr.write(message.join(' ') + '\n');
 }
 
@@ -54,10 +54,11 @@ export default class Server {
       var connection = null;
 
       try {
+        log('Connection from:', request.origin);
         connection = request.accept('clip-protocol', request.origin);
       }
       catch(error) {
-        console_error(error);
+        error(error);
         return;
       }
 
@@ -70,7 +71,7 @@ export default class Server {
           const TIMESTAMP     = parseInt(+new Date() / 1000);
           const TABLE_NAME    = 'MESSAGE_TABLE';
 
-          console_log(message.utf8Data);
+          log(message.utf8Data);
 
           if(MESSAGE.length > 1000) {
             connection.sendUTF('ERR The message should be less than 1000 chars');
@@ -114,7 +115,7 @@ export default class Server {
               connection.sendUTF(result.rows[0].id.toString());
             })
             .catch((error) => {
-              console_error(error);
+              error(error);
               connection.sendUTF('-1');
             })
           }
@@ -122,17 +123,17 @@ export default class Server {
           if(CODE === 'GET') {
             const QUERY_FOR_GET = [
               `SELECT message FROM ${TABLE_NAME}`,
-              `WHERE id = $$${MESSAGE}$$ AND hash = $$${HASH}$$`
+              `WHERE id = $${MESSAGE}$$ AND hash = $$${HASH}$$`
             ].join(' ');
 
-            console_log(QUERY_FOR_GET);
+            log('Query is: ', QUERY_FOR_GET);
 
             sendSQL(QUERY_FOR_GET)
             .then((result) => {
               connection.sendUTF(result.rows[0].message.toString());
             })
             .catch((error) => {
-              console_log(error);
+              log(error);
               connection.sendUTF('ERR Not found');
             });
           }
@@ -143,12 +144,12 @@ export default class Server {
       });
 
       connection.on('close', (reasonCode, description) => {
-        console_log(reasonCode, description);
+        log(reasonCode, description);
         return;
       });
     });
 
-    console_log('Server listen at port', PORT);
+    log('Server listen at port', PORT);
     server.listen(PORT);
   }
 }
