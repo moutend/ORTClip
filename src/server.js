@@ -57,8 +57,9 @@ export default class Server {
         message: null
       };
 
+      log('Connection from:', request.origin);
+
       try {
-        log('Connection from:', request.origin);
         connection = request.accept('clip-protocol', request.origin);
       }
       catch(error) {
