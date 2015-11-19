@@ -69,7 +69,7 @@ export default class Server {
           const HASH          = REQUEST_ARRAY[1];
           const MESSAGE       = REQUEST_ARRAY[2];
           const TIMESTAMP     = parseInt(+new Date() / 1000);
-          const TABLE_NAME    = 'MESSAGE_TABLE';
+          const TABLE_NAME    = 'message_table';
 
           log(message.utf8Data);
 
