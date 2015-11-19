@@ -21,7 +21,6 @@ export default function handleMessage(connection, psql) {
         Util.log(response.message);
         connection.sendUTF(JSON.stringify(response));
         return null;
-
       }
 
       if(request.message.length > 1000) {
@@ -31,7 +30,7 @@ export default function handleMessage(connection, psql) {
         return null;
       }
 
-     Util.log('Request is:', request, message.utf8Data);
+      Util.log('Request is:', request.message, request.hash);
 
       request.message = request.message.replace(/\$/g, '_$');
       request.hash    = request.hash.replace(/\$/g, '_$');
