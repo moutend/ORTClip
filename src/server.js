@@ -116,11 +116,12 @@ export default class Server {
               return sendSQL(SELECT_ID);
             })
             .then((result) => {
+              response.isOK = true;
+
               if(result === null) {
                 response.message = 'Not found';
               }
               else {
-                response.isOK = true;
                 response.message = parseInt(result.rows[0].id);
               }
 
