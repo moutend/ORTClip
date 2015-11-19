@@ -32,8 +32,8 @@ export default function handleMessage(connection, psql) {
 
       Util.log('Request is:', request.message, request.hash);
 
-      request.message = request.message.replace(/\$/g, '_$');
-      request.hash    = request.hash.replace(/\$/g, '_$');
+      request.message = request.message.toString().replace(/\$/g, '_$');
+      request.hash    = request.hash.toString().replace(/\$/g, '_$');
 
       if(request.mode === 'SET') {
         const UPDATE_ROW = [
