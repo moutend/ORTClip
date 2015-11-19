@@ -131,6 +131,7 @@ export default class Server {
 
             sendSQL(QUERY_FOR_GET)
             .then((result) => {
+              log('Result:', result.rows);
               connection.sendUTF(result.rows[0].message.toString());
             })
             .catch((error) => {
