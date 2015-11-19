@@ -123,7 +123,8 @@ export default class Server {
           if(CODE === 'GET') {
             const QUERY_FOR_GET = [
               `SELECT message FROM ${TABLE_NAME}`,
-              `WHERE id = $${MESSAGE}$$ AND hash = $$${HASH}$$`
+              `WHERE id = $escape$${MESSAGE}$escape$`,
+              `AND hash = $escape$${HASH}$escape$`
             ].join(' ');
 
             log('Query is: ', QUERY_FOR_GET);
