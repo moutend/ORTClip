@@ -13,7 +13,7 @@ export default function handleMessage(connection, psql) {
 
     if(message.type === 'utf8') {
       try {
-        log(message.utf8Data);
+        Util.log(message.utf8Data);
         request = JSON.parse(message.utf8Data);
       }
       catch(error) {
