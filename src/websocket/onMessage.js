@@ -90,19 +90,27 @@ export default function handleMessage(connection, psql) {
       }
 
       if(request.mode === 'GET') {
+        request.message = parseInt(request.message);
+
+        if(!request.message) {
+          response.message = 'Failed to parse hash';
+          Util.log(response.message);
+          connection.sendUTF(JSON.stringify(response));
+          return null;
+        }
+
         const SELECT_MESSAGE = [
           `SELECT message FROM ${TABLE_NAME}`,
           `WHERE id = $$${request.message}$$`,
           `AND hash = $$${request.hash}$$`
         ].join(' ');
 
-       Util.log(SELECT_MESSAGE);
+        Util.log(SELECT_MESSAGE);
 
         psql.send(SELECT_MESSAGE)
         .then((result) => {
           response.isOK = true;
           response.message = result.rows[0].message
-                             .toString()
                              .replace(/_\$/g, '$');
 
           connection.sendUTF(JSON.stringify(response));
