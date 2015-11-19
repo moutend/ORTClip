@@ -1,4 +1,5 @@
 import pg from 'pg';
+import http from 'http';
 import WebSocket from 'websocket';
 
 function log(...message) {
@@ -12,7 +13,6 @@ function err(...message) {
 export default class Server {
   constructor(PORT) {
     let WebSocketServer = WebSocket.server;
-    let http = require('http');
     let server = http.createServer((request, response) => {
       response.writeHead(403);
       response.end('<h1>403 Forbidden</h1>');
