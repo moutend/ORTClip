@@ -58,7 +58,7 @@ export default class Server {
         connection = request.accept('clip-protocol', request.origin);
       }
       catch(error) {
-        error(error);
+        error('Refused:', request.origin, error);
         return;
       }
 
@@ -71,9 +71,9 @@ export default class Server {
           const TIMESTAMP     = parseInt(+new Date() / 1000);
           const TABLE_NAME    = 'message_table';
 
-          log(message.utf8Data);
-
           if(MESSAGE.length > 1000) {
+            log(request.origin, MESSAGE.length);
+            log(request.origin, 'Refused');
             connection.sendUTF('ERR The message should be less than 1000 chars');
             return;
           }
@@ -131,7 +131,7 @@ export default class Server {
 
             sendSQL(QUERY_FOR_GET)
             .then((result) => {
-              log('Result:', result.rows);
+              log('Result:', JSON.stringify(result.rows));
               connection.sendUTF(result.rows[0].message.toString());
             })
             .catch((error) => {
