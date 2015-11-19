@@ -1,5 +1,9 @@
 import pg from 'pg';
 
+function log(...message) {
+  process.stdout.write(message.join(' ') + '\n');
+}
+
 function sendSQL(query) {
   return new Promise((resolve, reject) => {
     pg.connect(process.env.DATABASE_URL, (error, client, done) => {
@@ -25,7 +29,7 @@ function sendSQL(query) {
       });
     });
   });
-};
+}
 
 const SQL = [
   "INSERT INTO message_table",
@@ -38,12 +42,12 @@ for(let n = 1; n < 10000; n++) {
   (() => {
     sendSQL(SQL)
     .then((result) => {
-      console.log(n);
+      log(n, result);
     })
     .catch((error) => {
-      console.log(error);
+      log(error);
     });
   })(n);
 }
 
-console.log(SQL);
+log(SQL);
