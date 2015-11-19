@@ -5,7 +5,7 @@ function log(...message) {
   process.stdout.write(message.join(' ') + '\n');
 }
 
-function error(message) {
+function err(...message) {
   process.stderr.write(message.join(' ') + '\n');
 }
 
@@ -51,40 +51,44 @@ export default class Server {
     });
 
     ws.on('request', (request) => {
-      var connection = null;
+      let connection = null;
+      let response = {
+        isOK: false,
+        message: null
+      };
 
       try {
         log('Connection from:', request.origin);
         connection = request.accept('clip-protocol', request.origin);
       }
       catch(error) {
-        error('Refused:', request.origin, error);
+        err('Refused:', request.origin, error);
         return;
       }
 
       connection.on('message', (message) => {
         if(message.type === 'utf8') {
-          const REQUEST_ARRAY = message.utf8Data.split(' ');
-          const CODE          = REQUEST_ARRAY[0];
-          const HASH          = REQUEST_ARRAY[1];
-          const MESSAGE       = REQUEST_ARRAY[2];
-          const TIMESTAMP     = parseInt(+new Date() / 1000);
-          const TABLE_NAME    = 'message_table';
+          const TIMESTAMP  = parseInt(+new Date() / 1000);
+          const TABLE_NAME = 'message_table';
+          let request    = JSON.parse(message.utf8Data);
 
-          if(MESSAGE.length > 1000) {
-            log(request.origin, MESSAGE.length);
-            log(request.origin, 'Refused');
-            connection.sendUTF('ERR The message should be less than 1000 chars');
+          if(request.message.length > 1000) {
+            response.message = 'The message should be less than 1000 chars';
+             log(response.message);
+            connection.sendUTF(JSON.stringify(response));
             return;
           }
 
-          if(CODE === 'SET') {
+          request.message = request.message.replace(/\$/g, '_$');
+          request.hash    = request.hash.replace(/\$/g, '_$');
+
+          if(request.mode === 'SET') {
             const UPDATE_ROW = [
               `UPDATE ${TABLE_NAME} SET`,
               'isUsing = True,',
-              `hash = $$${HASH}$$,`,
+              `hash = $$${request.hash}$$,`,
               `timestamp = to_timestamp(${TIMESTAMP}),`,
-              `message = $$${MESSAGE}$$`,
+              `message = $$${request.message}$$`,
               'WHERE id = (',
               `  SELECT id FROM ${TABLE_NAME}`,
               '  WHERE isUsing = False',
@@ -92,62 +96,82 @@ export default class Server {
               ')'
             ].join(' ');
 
+            log(UPDATE_ROW)
+
             sendSQL(UPDATE_ROW)
             .then((result) => {
               if(result.rowCount === 0) {
-                return -1;
+                return null;
               }
 
-              const GET_ID = [
+              const SELECT_ID = [
                 `SELECT id FROM ${TABLE_NAME}`,
-                `WHERE hash = $$${HASH}$$`,
+                `WHERE hash = $$${request.hash}$$`,
+                `AND message = $$${request.message}$$`,
                 `AND isUsing = True`
               ].join(' ');
 
-              return sendSQL(GET_ID);
+              log(SELECT_ID);
+
+              return sendSQL(SELECT_ID);
             })
             .then((result) => {
-              if(result === -1) {
-                connection.sendUTF(JSON.stringify(result));
-                return;
+              if(result === null) {
+                response.message = 'Not found';
+              }
+              else {
+                response.isOK = true;
+                response.message = parseInt(result.rows[0].id);
               }
 
-              connection.sendUTF(result.rows[0].id.toString());
+              connection.sendUTF(JSON.stringify(response));
             })
             .catch((error) => {
-              error(error);
-              connection.sendUTF('-1');
-            })
+              err(error);
+              response.message = error;
+              connection.sendUTF(JSON.stringify(response));
+            });
+
+            return;
           }
 
-          if(CODE === 'GET') {
-            const QUERY_FOR_GET = [
+          if(request.mode === 'GET') {
+            const SELECT_MESSAGE = [
               `SELECT message FROM ${TABLE_NAME}`,
-              `WHERE id = $escape$${MESSAGE}$escape$`,
-              `AND hash = $escape$${HASH}$escape$`
+              `WHERE id = $$${request.message}$$`,
+              `AND hash = $$${request.hash}$$`
             ].join(' ');
 
-            log('Query is: ', QUERY_FOR_GET);
+            log(SELECT_MESSAGE);
 
-            sendSQL(QUERY_FOR_GET)
+            sendSQL(SELECT_MESSAGE)
             .then((result) => {
-              log('Result:', JSON.stringify(result.rows));
-              connection.sendUTF(result.rows[0].message.toString());
+              response.isOK = true;
+              response.message = result.rows[0].message
+                                 .toString()
+                                 .replace(/_\$/g, '$');
+
+              connection.sendUTF(JSON.stringify(response));
             })
             .catch((error) => {
-              log(error);
-              connection.sendUTF('ERR Not found');
+              err(error);
+              response.message = error;
+              connection.sendUTF(JSON.stringify(response));
             });
+
+            return;
           }
         }
         else {
-          connection.sendUTF('ERR Invalid message');
+          response.message = 'Invalid message type';
+          log(response.message);
+          connection.sendUTF(JSON.stringify(response));
         }
       });
 
       connection.on('close', (reasonCode, description) => {
-        log(reasonCode, description);
-        return;
+        response.message = 'Client closed the connection';
+        log(response.message, reasonCode, description);
       });
     });
 
