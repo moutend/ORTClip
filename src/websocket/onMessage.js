@@ -13,10 +13,11 @@ export default function handleMessage(connection, psql) {
 
     if(message.type === 'utf8') {
       try {
+        log(message.utf8Data);
         request = JSON.parse(message.utf8Data);
       }
       catch(error) {
-        response.message = error;
+        response.message = 'Failed to parse JSON';
         Util.log(response.message);
         connection.sendUTF(JSON.stringify(response));
         return null;
