@@ -1,10 +1,6 @@
 import pg from 'pg';
 
 export default class PSQL {
-  constructor() {
-
-  }
-
   send(query) {
     return new Promise((resolve, reject) => {
       pg.connect(process.env.DATABASE_URL, (error, client, done) => {

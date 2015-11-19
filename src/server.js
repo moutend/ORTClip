@@ -7,6 +7,7 @@ import onClose   from './websocket/onClose';
 
 export default class Server {
   constructor(PORT) {
+    let psql = new PSQL();
     let WebSocketServer = WebSocket.server;
     let server = http.createServer((request, response) => {
       response.writeHead(403);
@@ -29,7 +30,7 @@ export default class Server {
         return;
       }
 
-      connection.on('message', onMessage(connection, PSQL));
+      connection.on('message', onMessage(connection, psql));
       connection.on('close',   onClose());
     });
 

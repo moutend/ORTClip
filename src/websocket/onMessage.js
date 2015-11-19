@@ -1,6 +1,6 @@
 import * as Util from "../util"
 
-export default function handleMessage(connection, PSQL) {
+export default function handleMessage(connection, psql) {
   return function(message) {
     const TIMESTAMP  = parseInt(+new Date() / 1000);
     const TABLE_NAME = 'message_table';
@@ -16,7 +16,7 @@ export default function handleMessage(connection, PSQL) {
       if(request.message.length > 1000) {
         response.message = 'The message should be less than 1000 chars';
         Util.log(response.message);
-        this.connection.sendUTF(JSON.stringify(response));
+        connection.sendUTF(JSON.stringify(response));
         return;
       }
 
@@ -41,7 +41,7 @@ export default function handleMessage(connection, PSQL) {
 
        Util.log(UPDATE_ROW)
 
-        PSQL.send(UPDATE_ROW)
+        psql.send(UPDATE_ROW)
         .then((result) => {
           if(result.rowCount === 0) {
             return null;
@@ -56,7 +56,7 @@ export default function handleMessage(connection, PSQL) {
 
          Util.log(SELECT_ID);
 
-          return PSQL.send(SELECT_ID);
+          return psql.send(SELECT_ID);
         })
         .then((result) => {
           response.isOK = true;
@@ -76,7 +76,7 @@ export default function handleMessage(connection, PSQL) {
           connection.sendUTF(JSON.stringify(response));
         });
 
-        return;
+        return 'SET';
       }
 
       if(request.mode === 'GET') {
@@ -88,7 +88,7 @@ export default function handleMessage(connection, PSQL) {
 
        Util.log(SELECT_MESSAGE);
 
-        PSQL.send(SELECT_MESSAGE)
+        psql.send(SELECT_MESSAGE)
         .then((result) => {
           response.isOK = true;
           response.message = result.rows[0].message
@@ -103,13 +103,14 @@ export default function handleMessage(connection, PSQL) {
           connection.sendUTF(JSON.stringify(response));
         });
 
-        return;
+        return 'GET';
       }
     }
     else {
       response.message = 'Invalid message type';
       Util.log(response.message);
       connection.sendUTF(JSON.stringify(response));
+      return 'binary';
     }
   }
 }
