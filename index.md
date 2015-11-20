@@ -1,79 +1,164 @@
 ---
 layout: default
 ---
+<noscript>
+  <p>ORTClip lets you send a message instantly, secretly, without sign-up.</p>
+  <p>This web app uses JavaScript, but your browser seems to have it disabled or not support it</p>
+  <p>Please enable JavaScript or use another browser supports JavaScript.</p>
+  <p>Thanks!</p>
+</noscript>
+
 <section id="welcome_screen" class="expand">
-  <h1>
-    ORTClip
-  </h1>
-</section>
-<section id="editMessage_screen" class="expand" style="display:none;">
   <div class="flex">
     <div class="flex-body">
-      <div class="textarea-container">
-        <div>
-          <textarea id="textarea_message"></textarea>
+      <div class="flex-table-wrapper">
+        <div class="flex-table-cell">
+          <h1 class="logo">ORTClip</h1>
+          <p>Please select what you want to do</p>
         </div>
       </div>
     </div>
     <div class="flex-menu">
       <div class="flex-menu-2">
-        <button id="button_send">
-          <div>
-            <span>
-              <i class="fa fa-send"></i>
-              Send
-            </span>
+        <button class="#edit_screen">
+          <div class="table-wrapper">
+            <div class="table-cell-wrapper">
+                <i class="fa fa-upload"></i>
+                <p>Send</p>
+            </div>
           </div>
-        </button><button id="button_clear">
-          <div>
-            <span>
-              <i class="fa fa-eraser"></i>
-              Clear
-            </span>
+        </button><button class="#scan_screen">
+          <div class="table-wrapper">
+            <div class="table-cell-wrapper">
+                <i class="fa fa-download"></i>
+                <p>Get</p>
+            </div>
           </div>
         </button>
       </div>
     </div>
   </div>
-  <textarea style="display: none;" id="hidden_hash"></textarea>
 </section>
 
-<section id="sendingMessage_screen" class="expand" style="display:none;">
-  <h1>
-    Please wait.
-  </h1>
-  <div>
-    <i id="waiting" class="fa fa-spinner fa-pulse"></i>
-  </div>
-</section>
-
-<section id="sendMessage_screen" class="expand" style="display:none;">
-  <h1>
-    Your URL:
-  </h1>
-  <div id="qrcode_and_url">
-    <div id="QRCode"></div>
-    <input id="input_uri" readonly />
-  </div>
-</section>
-
-<section id="recieveMessage_screen" class="expand" style="display:none;">
+<section id="edit_screen" class="expand" style="display:none;">
   <div class="flex">
     <div class="flex-body">
-      <div class="textarea-container">
-        <div>
-          <textarea id="textarea_recieve" readonly></textarea>
+      <div class="flex-table-wrapper">
+        <div class="flex-table-cell">
+          <textarea id="textarea_request_message"></textarea>
+          <textarea style="display: none;" id="hidden_hash"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="flex-menu">
+      <div class="flex-menu-2">
+        <button class="#wait_screen">
+          <div class="table-wrapper">
+            <div class="table-cell-wrapper">
+              <i class="fa fa-send"></i>
+              <p>Send</p>
+            </div>
+          </div>
+        </button><button class="clearMessage">
+          <div class="table-wrapper">
+            <div class="table-cell-wrapper">
+              <i class="fa fa-eraser"></i>
+              <p>Clear</p>
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="wait_screen" class="expand" style="display:none;">
+  <div class="flex">
+    <div class="flex-body">
+      <div class="flex-table-wrapper">
+        <div class="flex-table-cell">
+          <h1>
+            Please wait.
+          </h1>
+          <i id="waiting" class="fa fa-spinner fa-pulse"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="send_screen" class="expand" style="display:none;">
+  <div class="flex">
+    <div class="flex-body">
+      <div class="flex-table-wrapper">
+        <div class="flex-table-cell">
+          <h1>Your code:</h1>
+          <div id="qrcode">
+            <div id="image_qrcode"></div>
+          </div>
+          <textarea id="textarea_qrcode" rows="1"></textarea>
         </div>
       </div>
     </div>
     <div class="flex-menu">
       <div class="flex-menu-1">
-        <button id="button_copy">
-          <div>
-            <span>
+        <button class="copy">
+          <div class="table-wrapper">
+            <div class="table-cell-wrapper">
               <i class="fa fa-clipboard"></i>
               Copy
-            </span>
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="scan_screen" class="expand" style="display:none;">
+  <div class="flex">
+    <div class="flex-body">
+      <div class="flex-table-wrapper">
+        <div class="flex-table-cell">
+          <h1>Scan code:</h1>
+          <textarea id="textarea_code" rows="1"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="flex-menu">
+      <div class="flex-menu-1">
+        <button class="#wait_screen">
+          <div class="table-wrapper">
+            <div class="table-cell-wrapper">
+              <i class="fa fa-clipboard"></i>
+              <p>Scan</p>
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="get_screen" class="expand" style="display:none;">
+  <div class="flex">
+    <div class="flex-body">
+      <div class="flex-table-wrapper">
+        <div class="flex-table-cell">
+          <textarea id="textarea_response_message"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="flex-menu">
+      <div class="flex-menu-1">
+        <button class="copy">
+          <div class="table-wrapper">
+            <div class="table-cell-wrapper">
+              <span>
+                <i class="fa fa-clipboard"></i>
+                <p>Copy</p>
+              </span>
+            </div>
           </div>
         </button>
       </div>
@@ -82,11 +167,18 @@ layout: default
 </section>
 
 <section id="error_screen" class="expand" style="display:none;">
-  <h1>
-    Ooops!
-  </h1>
-  <p>
-    The error message is below:
-  </h2>
-  <textarea id="textarea_error" readonly></textarea>
+  <div class="flex">
+    <div class="flex-body">
+      <div class="flex-table-wrapper">
+        <div class="flex-table-cell">
+          <h1>
+            Ooops!
+          </h1>
+          <p>Sorry, a technical problem occurred.</p>
+          <p>The error message is below:</p>
+          <textarea id="textarea_error" readonly></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
