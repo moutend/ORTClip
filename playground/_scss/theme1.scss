@@ -1,9 +1,18 @@
 * {
   font-family: 'Open Sans Light', Helvetica, 'Hiragino Kaku Gothic Pro', Meiryo, Arial, sans-serif;
+  font-size: 15pt;
   line-height: 172%;
   margin: 0;
   padding: 0;
   text-decoration: none;
+}
+
+body {
+  position: relative;
+}
+
+.code {
+  font-family: "Source Code Pro", "Liberation Mono", Consolas, Courier, monospace, sans-serif;
 }
 
 .expand {
@@ -11,74 +20,99 @@
   height: 100%;
 }
 
-#header {
-  height: 16%;
+.flex-table-wrapper{
+  display: table;
   width: 100%;
+  height: 100%;
 
-  h1 {
-    display: inline-block;
-    color: #FFF;
-    background-color: #910;
-    font-family: "Arial Black", Gadget, sans-serif;
-    font-size: 172%;
-    padding: 0 .25em;
+  .flex-table-cell {
+    display: table-cell;
+    vertical-align: middle;
+    width: 100%;
+    height: 100%;
   }
+}
+
+textarea {
+  border: solid .125em #333;
+  border-radius: .5em;
+  font-family: "Source Code Pro", "Liberation Mono", Consolas, Courier, monospace, sans-serif;
+  font-size: 160%;
+  padding: .25em;
+  white-space: pre;
+}
+
+h1.logo {
+  position: relative;
+  text-indent: 0;
+  overflow: hidden;
+  display: inline-block;
+  padding: .125em .2em;
+  line-height: 116%;
+  margin: .25em 0;
+  font-family: "Arial Black", Gadget, sans-serif;
+  font-size: 384%;
+  color: #FFF;
+  background-color: #910;
+  text-align: center;
+  transform: scaleY(1.1);
+  letter-spacing: -0.085em;
+  border-radius: .125em;
 }
 
 #main {
-  height: 84%;
+  width: 100%;
+  height: 100%;
 }
 
-#welcome_screen {
-  h1 {
-    font-family: "Arial Black", Gadget, sans-serif;
-    font-size: 480%;
-    text-align: center;
+#get_screen, #wait_screen, #error_screen, #welcome_screen, #send_screen, #scan_screen {
+  text-align: center;
+
+  textarea {
+    display: block;
+    width: 80%;
+    height: auto;
+    margin: 0 auto;
   }
-}
-
-#sendingMessage_screen {
   h1 {
-    font-size: 320%;
+    display: inline-block;
     font-weight: 100;
-    text-align: center;
+    font-size: 240%;
   }
-  div {
-    text-align: center;
-
-    #waiting {
-      display: inline-block;
-      font-size: 8em;
-    }
+  h1.logo {
+    font-size: 384%;
   }
 }
 
-#sendMessage_screen {
+#error_screen {
   h1 {
-    font-size: 256%;
-    line-height: 100%;
-    font-weight: 100;
-    text-align: center;
+    display: block;
   }
-
-  #qrcode_and_url {
-    width: 100%;
-    text-align: center;
-
-    #QRCode {
-      display: inline-block;
-      vertical-align: middle;
-      padding: 2em;
-    }
-    input {
-      display: inline-block;
-      width: 64%;
-      padding: .125em .25em;
-      border: solid #777 .25em;
-      border-radius: .5em;
-      font-size: 256%;
-    }
+  textarea {
+    width: 48%;
+    margin: .75em auto;
+      font-size: 100%;
   }
+}
+
+#get_screen, #edit_screen {
+  textarea {
+    display: block;
+    width: 86%;
+    height: 80%;
+    margin: 0 auto;
+ }
+}
+
+#scan_screen {
+  h1 {
+    display: inline-block;
+  }
+}
+
+#waiting {
+  display: block;
+  font-size: 4em;
 }
 
 .flex {
@@ -93,68 +127,50 @@
     width: 84%;
     height: 100%;
 
-    div.textarea-container {
-      display: table;
-      width: 100%;
-      height: 100%;
-
-      div {
-        display: table-cell;
-        vertical-align: middle;
-        height: 100%;
-
-        textarea {
-          display: block;
-          width: 86%;
-          height: 80%;
-          padding: .5em;
-          margin: 0 auto;
-          border: solid .25em #C80;
-          border-radius: .5em;
-          font-family: "Source Code Pro", "Liberation Mono", Consolas, Courier, monospace, sans-serif;
-          white-space: pre;
-          font-size: 160%;
-        }
-      }
-    }
   }
   .flex-menu {
     -webkit-order: 1;
     order: 1;
-    width: 16%;
+    width: 12%;
     height: 100%;
 
     .flex-menu-1, .flex-menu-2 {
       height: 100%;
+      background-color: #333;
 
+      button:active {
+        background-color: #89E;
+      }
       button {
+        color: #FFF;
+        background-color: rgba(0,0,0,0);
+        border-right:  solid 2px #AAA;
+        border-top:    none;
+        border-left:   none;
+        border-bottom: none;
         width: 100%;
-        border: none;
-        background-color: #FFF;
 
-        div {
+        div.table-wrapper {
           display: table;
-          width: 72%;
-          height: 64%;
-          margin: 0 auto;
-          background-color: #333;
-          color: #FFF;
-          border: solid 1px #AAA;
-          border-radius: 1em;
+          width: 100%;
+          height: 100%;
 
-          span {
+          div.table-cell-wrapper {
             display: table-cell;
+            width: 100%;
+            height: 100%;
             vertical-align: middle;
-            font-size: 172%;
-            letter-spacing: .05em;
-            padding: 0 .25em;
 
-            i {
-              display: inline-block;
-              font-size: 172%;
-              padding: .25em;
-              vertical-align: middle;
-            }
+              i {
+                text-align: center;
+                display: block;
+                font-size: 144%;
+                vertical-align: middle;
+              }
+              p {
+                display: block;
+                padding: .25em;
+              }
           }
         }
       }
@@ -173,13 +189,8 @@
     .flex-menu-1 {
       button {
         height: 100%;
-
-        div {
-          height: 30%;
-        }
       }
     }
-
     .flex-menu-2 {
       button {
         height: 50%;
@@ -187,7 +198,33 @@
     }
   }
 }
+
+#qrcode {
+  display: inline-block;
+  text-align: center;
+}
+
+#image_qrcode {
+  display: inline-block;
+  vertical-align: middle;
+
+  img {
+    width: 128px;
+    height: 128px;
+    margin: 1.5em;
+  }
+}
+
 @media screen and (max-aspect-ratio: 4/3) {
+  #error_screen {
+    textarea {
+      width: 72%;
+    }
+  }
+  #textarea_qrcode {
+    width: 80%;
+  }
+
   #sendMessage_screen {
     #qrcode_and_url {
       input {
@@ -204,44 +241,62 @@
       -webkit-order: 1;
       order: 1;
       width: 100%;
-      height: 76%;
+      height: 80%;
     }
 
     .flex-menu {
       -webkit-order: 2;
       order: 2;
       width: 100%;
-      height: 24%;
+      height: 20%;
+
+      .flex-menu-1, .flex-menu-2 {
+        height: 100%;
+        button {
+          height: 100%;
+          border-right: none;
+          border-top: solid 2px #AAA;
+
+          div.table-wrapper {
+            div.table-cell-wrapper {
+              line-height: 100%;
+
+              i {
+                display: inline-block;
+                line-height: 100%;
+              }
+              p {
+                display: inline-block;
+                padding: 0 .25em;
+              }
+            }
+          }
+        }
+        button#pro {
+          div {
+            background-color: #CCC;
+          }
+        }
+      }
 
       .flex-menu-1 {
         button {
           height: 100%;
           width: 100%;
 
-          div {
-            width: 48%;
-            span {
-              p {
-                margin-right: 1em;
-              }
-            }
+          div.table-wrapper {
+            width: 100%;
           }
         }
       }
-
+      .flex-menu-1 {
+        button {
+          width: 100%;
+        }
+      }
       .flex-menu-2 {
         button {
-          height: 100%;
           width: 50%;
-
-          div {
-            width: 86%;
-            span {
-              p {
-                margin-right: 1em;
-              }
-            }
-          }
         }
       }
     }
