@@ -5,8 +5,8 @@ class PSQL {
   constructor(result) {
     this.result = result;
   }
-  send(query) {
-    return new Promise((resolve, reject) => {
+  send() {
+    return new Promise((resolve) => {
       resolve(this.result);
     });
   }
@@ -14,7 +14,7 @@ class PSQL {
 
 describe('onMessage', () => {
   let connection = {
-    sendUTF: (message) => {}
+    sendUTF: () => {}
   };
 
   it('is foobar', () => {
