@@ -109,11 +109,17 @@ export default function handleMessage(connection, psql) {
 
         psql.send(SELECT_MESSAGE)
         .then((result) => {
-          response.isOK = true;
-          response.message = result.rows[0].message
-                             .replace(/_\$/g, '$');
+          if(result.rowCount === 0) {
+            response.message = 'Not found'
+            connection.sendUTF(JSON.stringify(response));
+            Util.log(response.message);
+            return;
+          }
 
+          response.isOK = true;
+          response.message = result.rows[0].message.replace(/_\$/g, '$');
           connection.sendUTF(JSON.stringify(response));
+          Util.log(response.message);
         })
         .catch((error) => {
          Util.error(error);
