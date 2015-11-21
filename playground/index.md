@@ -1,20 +1,13 @@
 ---
 layout: default
 ---
-<noscript>
-  <p>ORTClip lets you send a message instantly, secretly, without sign-up.</p>
-  <p>This web app uses JavaScript, but your browser seems to have it disabled or not support it</p>
-  <p>Please enable JavaScript or use another browser supports JavaScript.</p>
-  <p>Thanks!</p>
-</noscript>
-
 <section id="welcome_screen" class="expand">
   <div class="flex">
     <div class="flex-body">
       <div class="flex-table-wrapper">
         <div class="flex-table-cell">
           <h1 class="logo">ORTClip</h1>
-          <p>Please select what you want to do</p>
+          <p>Let's send a message secretly, instantly and without sign-up</p>
         </div>
       </div>
     </div>
