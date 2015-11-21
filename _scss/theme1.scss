@@ -72,7 +72,7 @@ h1.logo {
     display: block;
     width: 80%;
     height: auto;
-    margin: 0 auto;
+    margin:1em auto;
   }
   h1 {
     display: inline-block;
@@ -125,17 +125,21 @@ h1.logo {
   height: 100%;
 
   .flex-body {
+    display: block;
     -webkit-order: 2;
     order: 2;
     width: 84%;
     height: 100%;
+    overflow: scroll;
 
   }
   .flex-menu {
+    display: block;
     -webkit-order: 1;
     order: 1;
     width: 12%;
     height: 100%;
+    overflow: scroll;
 
     .flex-menu-1, .flex-menu-2 {
       height: 100%;
@@ -212,8 +216,8 @@ h1.logo {
   vertical-align: middle;
 
   img {
-    width: 128px;
-    height: 128px;
+    width: 192px;
+    height: 192px;
     margin: 1.5em;
   }
 }
