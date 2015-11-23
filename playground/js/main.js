@@ -2,6 +2,17 @@
 
 var _$ = function(querry) {
   return document.querySelectorAll(querry);
+}
+var createHash = function(length) {
+  return new Array(length)
+  .fill(0)
+  .map(function() {
+    return 33 + Math.random() * 78;
+  })
+  .map(function(v) {
+    return String.fromCharCode(v);
+  })
+  .join('');
 };
 
 var zeroFill = function(n) {
@@ -16,8 +27,10 @@ var zeroFill = function(n) {
 
 var scanCode = function(state) {
   var code = _$('#textarea_code')[0].value
-
-  state.isRefused = false;
+  var onresponse = function(response) {
+    _$('#textarea_response_message')[0].value = response.message;
+    handle('#get_screen');
+  }
 
   if(code === '') {
     state.isRefused = true;
@@ -30,7 +43,8 @@ var scanCode = function(state) {
   createWebSocket({
     mode: 'GET',
     hash: hash,
-    message: id
+    message: id,
+    onresponse: onresponse
   });
 
   return state;
@@ -67,50 +81,27 @@ var copyToClipboard = function(state) {
   return state;
 };
 
-var messageWebSocket = function(options, ws) {
+var onOpen= function(options, ws) {
+  return function (event) {
+    clearTimeout(options.tid);
+    ws.send(JSON.stringify(options));
+  };
+};
+
+var onMessage = function(request, ws) {
   return function(event) {
-    var response = JSON.parse(event.data);
+    var response = JSON.parse(event.data.toString());
 
-    if(response.isOK) {
-      if(options.mode === 'SET' && response.message === '503') {
-        setTimeout(
-          messageWebSocket(options, ws),
-          12000
-        );
-        return;
-      }
+    ws.close();
 
-      if(options.mode === 'GET') {
-        _$('#textarea_response_message')[0].value = response.message;
-        handle('#get_screen');
-        return;
-      }
-
-      if(options.mode === 'SET') {
-        var text = zeroFill(parseInt(response.message)) + options.hash;
-        var qrcode = new QRCode(_$("#image_qrcode")[0], {
-          text:   text,
-          width:  160,
-          height: 160
-        });
-
-        _$('#textarea_qrcode')[0].value = text;
-        handle('#send_screen');
-        return;
-      }
-    }
-    else {
-      _$('#textarea_error')[0].value = response.message;
+    if(!response.isOK) {
+      _$('#textarea_error')[0].value = JSON.stringify(response.message);
       handle('#error_screen');
       return;
     }
-  }
-};
 
-var openWebSocket= function(options, ws) {
-  return function (event) {
-    ws.send(JSON.stringify(options));
-  };
+    request.onresponse(response, ws);
+  }
 };
 
 var closeWebSocket = function(options, ws) {
@@ -118,42 +109,50 @@ var closeWebSocket = function(options, ws) {
   handle('#error_screen');
 };
 
-var timeoutMessage = function(ws) {
+var onTimeout = function(ws) {
   _$('#textarea_error')[0].value = 'Connection timed out';
   handle('#error_screen');
-  return;
 };
 
-var createWebSocket = (function() {
-  var _isOpened = false;
+var createWebSocket = function(request) {
+  var protocol = 'clip-protocol';
+  var uri      = 'wss://ortclip.herokuapp.com';
+  var ws       = new WebSocket(uri, protocol);
 
-  return function(options) {
-    if(_isOpened === true) {
-      return;
-    }
+  request.tid = setTimeout(onTimeout, 24000);
 
-    _isOpened = true;
-
-    setTimeout(
-      timeoutMessage,
-      24000
-    );
-
-    var protocol  = 'clip-protocol';
-    var uri       = 'wss://ortclip.herokuapp.com';
-    var ws        = new WebSocket(uri, protocol);
-
-    ws.addEventListener('close',   closeWebSocket(options, ws));
-    ws.addEventListener('open',    openWebSocket(options, ws));
-    ws.addEventListener('message', messageWebSocket(options, ws));
-  };
-})();
+  ws.addEventListener('close',   closeWebSocket(request, ws));
+  ws.addEventListener('open',    onOpen(request, ws));
+  ws.addEventListener('message', onMessage(request, ws));
+};
 
 var sendMessage = function(state) {
   var message = _$('#textarea_request_message')[0].value
   var hash    = createHash(8);
+  var onresponse = (function(hash) {
+    return function(response, ws) {
+      if(response.message === "wait") {
+        setTimeout(
+          onMessage(options, ws),
+          12000
+        );
+        return;
+      }
 
-  state.isRefused = false;
+      var text = zeroFill(parseInt(response.message)) + hash;
+      _$('#textarea_qrcode')[0].value = text;
+      _$("#image_qrcode")[0].innerHTML = '';
+
+      var qrcode = new QRCode(_$("#image_qrcode")[0], {
+        text:   text,
+        width:  160,
+        height: 160
+      });
+
+      handle('#send_screen');
+    };
+  })(hash);
+
   if(message === '') {
     state.isRefused = true;
     return state;
@@ -162,30 +161,12 @@ var sendMessage = function(state) {
   createWebSocket({
     mode: 'SET',
     hash: hash,
-    message: message
+    message: message,
+    onresponse: onresponse
   });
 
   return state;
 };
-
-function createHash(length) {
-  return new Array(length)
-  .fill(0)
-  .map(function() {
-    return 33 + Math.random() * 78;
-  })
-  .map(function(v) {
-    return String.fromCharCode(v);
-  })
-  .join('');
-}
-
-
-function clearMessage(state) {
-  _$(state.currentScreenName + ' textarea')[0].value = '';
-  state.isRefused = true;
-  return state;
-}
 
 var handle = (function() {
   var _state = {
@@ -198,10 +179,11 @@ var handle = (function() {
       '#scan_screen': {}
     },
     '#edit_screen': {
-      '#wait_screen': sendMessage,
-      'clearMessage': clearMessage
+      '#welcome_screen': {},
+      '#wait_screen': sendMessage
     },
     '#scan_screen': {
+      '#welcome_screen': {},
       '#wait_screen': scanCode
     },
     '#wait_screen': {
@@ -210,17 +192,20 @@ var handle = (function() {
       '#error_screen': {}
     },
     '#get_screen': {
+      '#welcome_screen': {},
       'copy': copyToClipboard
     },
     '#send_screen': {
+      '#welcome_screen': {},
       'copy': copyToClipboard
     },
-    '#error_screen': {}
+    '#error_screen': {
+      '#welcome_screen': {}
+    }
   };
 
   return function(next_screen_name) {
     var screen = _screens[_state.currentScreenName][next_screen_name]
-
     if(typeof screen === 'undefined') {
       return;
     }
@@ -230,8 +215,10 @@ var handle = (function() {
     }
 
     if(_state.isRefused) {
+      _state.isRefused = false;
       return;
     }
+
 
     var prev = _$(_state.currentScreenName)[0];
     var next = _$(next_screen_name)[0];
