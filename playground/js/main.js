@@ -38,6 +38,16 @@ var scanCode = function(state) {
 
 var copyToClipboard = function(state) {
   var t = _$(state.currentScreenName+ ' textarea')[0];
+  var ios = /iPad|iPhone|iPod/.test(navigator.platform);
+
+  state.isRefused = true;
+
+  if(ios || typeof window.ontouchstart === 'object') {
+    t.focus();
+    t.selectionStart = 0;
+    t.selectionEnd = t.value.length;
+    return state;
+  }
 
   try {
     t.select();
@@ -54,7 +64,6 @@ var copyToClipboard = function(state) {
     handle('#error_screen');
   }
 
-  state.isRefused = true;
   return state;
 };
 
