@@ -25,12 +25,96 @@ var zeroFill = function(n) {
         : n;
 };
 
+var getStream = function() {
+  return new Promise(function(resolve, reject) {
+    window.navigator.getUserMedia = window.getUserMedia || navigator.webkitGetUserMedia
+    window.navigator.getUserMedia(
+      {
+        video: true,
+        audio: false
+      },
+      function(stream) {
+        resolve(stream)
+      },
+      function(err) {
+        reject(err)
+      }
+    )
+  })
+}
+
+var streamToCanvas = function(stream) {
+  return new Promise(function(resolve, reject) {
+    var c = _$('#qr-canvas')[0];
+    var gc = c.getContext("2d");
+    var v = _$('#video')[0]
+
+    c.width = 256;
+    c.height = 192;
+    gc.clearRect(0, 0, 256, 192);
+    v.src = window.webkitURL.createObjectURL(stream);
+
+    resolve({
+      gc: gc,
+      v: v
+    });
+  })
+};
+
+var capture = function(option) {
+  window._v = option.v;
+  window._gc = option.gc;
+  try{
+    _gc.drawImage(_v, 0, 0, 256, 192);
+    try{
+      var code = qrcode.decode();
+      console.log(handle, code)
+      _$('#scan_screen textarea')[0].value = code;
+      handle('#wait_screen');
+      return;
+    }
+    catch(e){
+      window._tid = setTimeout(function() {
+        capture(option);
+      }, 500);
+    };
+  }
+  catch(e){
+    window._tid = setTimeout(function() {
+      capture(option);
+    }, 500);
+  };
+};
+
+var prepareScan = function(state) {
+  getStream()
+  .then(streamToCanvas)
+  .then(function(option) {
+    capture(option);
+  })
+  .catch(function(error) {
+    capture(option);
+  });
+
+  return state;
+};
+
 var scanCode = function(state) {
   var code = _$('#textarea_code')[0].value
   var onresponse = function(response) {
     _$('#textarea_response_message')[0].value = response.message;
     handle('#get_screen');
   }
+
+
+
+
+
+
+
+
+
+
 
   if(code === '') {
     state.isRefused = true;
@@ -176,7 +260,7 @@ var handle = (function() {
   var _screens = {
     '#welcome_screen': {
       '#edit_screen': {},
-      '#scan_screen': {}
+      '#scan_screen': prepareScan
     },
     '#edit_screen': {
       '#welcome_screen': {},
