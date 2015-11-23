@@ -1,7 +1,8 @@
 .bundle/
+.jekyll-metadata
 .sass-cache/
+Gemfile.lock
+_config.yml*
+_local_config.yml*
 _site/
 vendor/
-Gemfile.lock
-_local_config.yml*
-_config.yml*
