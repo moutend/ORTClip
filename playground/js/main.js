@@ -47,42 +47,40 @@ var streamToCanvas = function(stream) {
   return new Promise(function(resolve, reject) {
     var c = _$('#qr-canvas')[0];
     var gc = c.getContext("2d");
-    var v = _$('#video')[0]
+    var video = _$('#video')[0]
 
-    c.width = 256;
-    c.height = 192;
     gc.clearRect(0, 0, 256, 192);
-    v.src = window.webkitURL.createObjectURL(stream);
+    video.src = window.webkitURL.createObjectURL(stream);
 
     resolve({
       gc: gc,
-      v: v
+      video: video
     });
   })
 };
 
 var capture = function(option) {
-  window._v = option.v;
-  window._gc = option.gc;
   try{
-    _gc.drawImage(_v, 0, 0, 256, 192);
+    var video = option.video;
+    var gc = option.gc;
+
+    gc.drawImage(video, 0, 0, 256, 192);
+
     try{
       var code = qrcode.decode();
-      console.log(handle, code)
       _$('#scan_screen textarea')[0].value = code;
       handle('#wait_screen');
-      return;
     }
     catch(e){
       window._tid = setTimeout(function() {
         capture(option);
-      }, 500);
+      }, 250);
     };
   }
   catch(e){
     window._tid = setTimeout(function() {
       capture(option);
-    }, 500);
+    }, 250);
   };
 };
 
