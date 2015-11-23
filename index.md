@@ -122,7 +122,7 @@ layout: default
       <div class="flex-table-wrapper">
         <div class="flex-table-cell">
           <h1>Scan QR code</h1>
-          <video id="video" width="256px" autoplay></video>
+          <video id="video" width="256px" height="192px" autoplay></video>
           <canvas id="qr-canvas" width="256" height="192"></canvas>
           <p>Or, please input code.</p>
           <textarea id="textarea_code" rows="1"></textarea>
