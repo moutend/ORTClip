@@ -82,7 +82,7 @@ export default function handleMessage(connection, psql) {
         })
         .catch((error) => {
          Util.error(error);
-          response.message = error.routine;
+          response.message = error;
           connection.sendUTF(JSON.stringify(response));
         });
 
