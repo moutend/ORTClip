@@ -35,23 +35,20 @@ body {
 
 textarea {
   border: solid .125em #333;
-  border-radius: .5em;
+  border-radius: .25em;
   font-family: "Source Code Pro", "Liberation Mono", Consolas, Courier, monospace, sans-serif;
-  font-size: 144%;
-  padding: .25em;
+  font-size: 128%;
+  padding: .5em;
   white-space: pre;
 }
 
 h1.logo {
-  position: relative;
-  text-indent: 0;
-  overflow: hidden;
   display: inline-block;
   padding: .125em .2em;
-  line-height: 116%;
-  margin: .25em 0;
+  padding-right: .4em;
+  line-height: 112%;
+  margin: .5em 0;
   font-family: "Arial Black", Gadget, sans-serif;
-  font-size: 384%;
   color: #FFF;
   background-color: #910;
   text-align: center;
@@ -72,7 +69,7 @@ h1.logo {
     display: block;
     width: 80%;
     height: auto;
-    margin:1em auto;
+    margin:.5em auto;
   }
   h1 {
     display: inline-block;
@@ -81,6 +78,7 @@ h1.logo {
   }
   h1.logo {
     font-size: 384%;
+    font-weight: bold;
   }
   p {
     margin: 0 1em;
@@ -248,14 +246,14 @@ h1.logo {
       -webkit-order: 1;
       order: 1;
       width: 100%;
-      height: 80%;
+      height: 84%;
     }
 
     .flex-menu {
       -webkit-order: 2;
       order: 2;
       width: 100%;
-      height: 20%;
+      height: 16%;
 
       .flex-menu-1, .flex-menu-2 {
         height: 100%;
