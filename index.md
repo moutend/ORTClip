@@ -7,7 +7,8 @@ layout: default
       <div class="flex-table-wrapper">
         <div class="flex-table-cell">
           <h1 class="logo">ORTClip</h1>
-          <p>Let's send a message secretly, instantly and without sign-up</p>
+          <noscript>This web app uses JavaScript. Please enable JavaScript.</noscript>
+          <p>The best way to share a secret message between you and someone.</p>
         </div>
       </div>
     </div>
@@ -113,7 +114,7 @@ layout: default
     <div class="flex-body">
       <div class="flex-table-wrapper">
         <div class="flex-table-cell">
-          <h1>Scan code:</h1>
+          <h1>Scan or input code:</h1>
           <textarea id="textarea_code" rows="1"></textarea>
         </div>
       </div>
