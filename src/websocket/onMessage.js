@@ -72,7 +72,7 @@ export default function handleMessage(connection, psql) {
           response.isOK = true;
 
           if(result === null) {
-            response.message = 'Not found';
+            response.message = 'wait';
           }
           else {
             response.message = parseInt(result.rows[0].id);
@@ -82,7 +82,7 @@ export default function handleMessage(connection, psql) {
         })
         .catch((error) => {
          Util.error(error);
-          response.message = error;
+          response.message = error.routine;
           connection.sendUTF(JSON.stringify(response));
         });
 
