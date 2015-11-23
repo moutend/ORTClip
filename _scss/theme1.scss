@@ -209,6 +209,20 @@ h1.logo {
   text-align: center;
 }
 
+#video {
+  display: block;
+  margin: .5em auto;
+  border: solid .125em #333;
+  border-radius: .25em;
+}
+
+#qr-canvas {
+  display: none;
+  margin: .5em auto;
+  width: 256px;
+  height: 192px;
+}
+
 #image_qrcode {
   display: inline-block;
   vertical-align: middle;
