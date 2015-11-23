@@ -46,18 +46,18 @@ layout: default
     </div>
     <div class="flex-menu">
       <div class="flex-menu-2">
-        <button class="#wait_screen">
+        <button class="#welcome_screen">
           <div class="table-wrapper">
             <div class="table-cell-wrapper">
-              <i class="fa fa-send"></i>
-              <p>Send</p>
+              <i class="fa fa-home"></i>
+              <p>Home</p>
             </div>
           </div>
-        </button><button class="clearMessage">
+        </button><button class="#wait_screen">
           <div class="table-wrapper">
             <div class="table-cell-wrapper">
-              <i class="fa fa-eraser"></i>
-              <p>Clear</p>
+              <i class="fa fa-upload"></i>
+              <p>Send</p>
             </div>
           </div>
         </button>
@@ -90,13 +90,20 @@ layout: default
           <div id="qrcode">
             <div id="image_qrcode"></div>
           </div>
-          <textarea id="textarea_qrcode" rows="1"></textarea>
+          <textarea id="textarea_qrcode" rows="1" readonly></textarea>
         </div>
       </div>
     </div>
     <div class="flex-menu">
-      <div class="flex-menu-1">
-        <button class="copy">
+      <div class="flex-menu-2">
+        <button class="#welcome_screen">
+          <div class="table-wrapper">
+            <div class="table-cell-wrapper">
+              <i class="fa fa-home"></i>
+              <p>Home</p>
+            </div>
+          </div>
+        </button><button class="copy">
           <div class="table-wrapper">
             <div class="table-cell-wrapper">
               <i class="fa fa-clipboard"></i>
@@ -120,12 +127,19 @@ layout: default
       </div>
     </div>
     <div class="flex-menu">
-      <div class="flex-menu-1">
-        <button class="#wait_screen">
+      <div class="flex-menu-2">
+        <button class="#welcome_screen">
           <div class="table-wrapper">
             <div class="table-cell-wrapper">
-              <i class="fa fa-clipboard"></i>
-              <p>Scan</p>
+              <i class="fa fa-home"></i>
+              <p>Home</p>
+            </div>
+          </div>
+        </button><button class="#wait_screen">
+          <div class="table-wrapper">
+            <div class="table-cell-wrapper">
+              <i class="fa fa-download"></i>
+              <p>Get</p>
             </div>
           </div>
         </button>
@@ -139,13 +153,20 @@ layout: default
     <div class="flex-body">
       <div class="flex-table-wrapper">
         <div class="flex-table-cell">
-          <textarea id="textarea_response_message"></textarea>
+          <textarea id="textarea_response_message" readonly></textarea>
         </div>
       </div>
     </div>
     <div class="flex-menu">
-      <div class="flex-menu-1">
-        <button class="copy">
+      <div class="flex-menu-2">
+        <button class="#welcome_screen">
+          <div class="table-wrapper">
+            <div class="table-cell-wrapper">
+              <i class="fa fa-home"></i>
+              <p>Home</p>
+            </div>
+          </div>
+        </button><button class="copy">
           <div class="table-wrapper">
             <div class="table-cell-wrapper">
               <span>
@@ -172,6 +193,20 @@ layout: default
           <p>The error message is below:</p>
           <textarea id="textarea_error" readonly></textarea>
         </div>
+      </div>
+    </div>
+    <div class="flex-menu">
+      <div class="flex-menu-1">
+        <button class="#welcome_screen">
+          <div class="table-wrapper">
+            <div class="table-cell-wrapper">
+              <span>
+                <i class="fa fa-home"></i>
+                <p>Home</p>
+              </span>
+            </div>
+          </div>
+        </button>
       </div>
     </div>
   </div>
