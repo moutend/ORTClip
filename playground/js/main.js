@@ -173,7 +173,7 @@ var copyToClipboard = function(screen) {
     t.focus();
     t.selectionStart = 0;
     t.selectionEnd = t.value.length;
-    return ;screen
+    return screen
   }
 
   try {
@@ -193,7 +193,7 @@ var copyToClipboard = function(screen) {
   catch(error) {
   }
 
-  return state;
+  return screen;
 };
 
 var onOpen= function(options, ws) {
