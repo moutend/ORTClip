@@ -109,25 +109,25 @@ var capture = function(option) {
   });
 };
 
-var clearCapture = function(state) {
-  clearTimeout(state.tid);
-  return state;
+var clearCapture = function(screen) {
+  clearTimeout(screen.state.tid);
+  return screen;
 };
 
-var prepareScan = function(state) {
+var prepareScan = function(screen) {
   getStream()
   .then(streamToCanvas)
   .then(function(option) {
     capture(option);
   })
   .catch(function(error) {
-    capture(option);
+    capture(error);
   });
 
-  return state;
+  return screen;
 };
 
-var scanCode = function(state) {
+var scanCode = function(screen) {
   var code = _$('#textarea_code')[0].value
   var onresponse = function(response) {
     _$('#textarea_response_message')[0].value = response.message;
@@ -137,8 +137,8 @@ var scanCode = function(state) {
   }
 
   if(code === '') {
-    state.isSticky = true;
-    return state;
+    screen.state.isSticky = true;
+    return screen;
   }
 
   var id   = code.slice(0, 4);
@@ -151,37 +151,38 @@ var scanCode = function(state) {
     onresponse: onresponse
   });
 
-  return state;
+  return screen;
 };
 
-var copyToClipboard = function(state) {
-  var t = _$(state.name+ ' textarea')[0];
+var copyToClipboard = function(screen) {
+  var t = _$(screen.name + ' textarea')[0];
   var ios = /iPad|iPhone|iPod/.test(navigator.platform);
 
-  state.isSticky = true;
+  screen.state.isSticky = true;
 
   if(ios || typeof window.ontouchstart === 'object') {
     t.focus();
     t.selectionStart = 0;
     t.selectionEnd = t.value.length;
-    return state;
+    return ;screen
   }
 
   try {
     t.select();
     document.execCommand('copy');
 
-    if ( document.selection ) {
+    if(document.selection) {
       document.selection.empty();
+      return screen;
     }
-    else if ( window.getSelection ) {
+
+    if(window.getSelection) {
       window.getSelection().removeAllRanges();
+      return screen;
     }
   }
   catch(error) {
-    handle({
-      name: '#error_screen'
-    });
+    return state;
   }
 
   return state;
@@ -238,7 +239,7 @@ var createWebSocket = function(request) {
   ws.addEventListener('message', onMessage(request, ws));
 };
 
-var sendMessage = function(state) {
+var sendMessage = function(screen) {
   var message = _$('#textarea_request_message')[0].value
   var hash    = createHash(8);
   var onresponse = (function(hash) {
@@ -268,8 +269,8 @@ var sendMessage = function(state) {
   })(hash);
 
   if(message === '') {
-    state.isSticky = true;
-    return state;
+    screen.state.isSticky = true;
+    return screen;
   }
 
   createWebSocket({
@@ -279,7 +280,7 @@ var sendMessage = function(state) {
     onresponse: onresponse
   });
 
-  return state;
+  return screen;
 };
 
 var screens = {
@@ -311,15 +312,13 @@ var screens = {
   '#get_screen': {
     '#welcome_screen': {},
     'copy': {
-      fn: copyToClipboard,
-      isSticky: true
+      fn: copyToClipboard
     }
   },
   '#send_screen': {
     '#welcome_screen': {},
     'copy': {
-      fn: copyToClipboard,
-      isSticky: true
+      fn: copyToClipboard
     }
   },
   '#error_screen': {
@@ -345,13 +344,14 @@ var handle = (function(screens) {
     var s = screens[_prev_screen.name][next_screen.name] || {};
 
     if(typeof s.fn === 'function') {
-      _prev_screen.state = s.fn(_prev_screen.state);
+      _prev_screen = s.fn(_prev_screen);
     }
 
     if(_prev_screen.state.isSticky) {
      _prev_screen.state.isSticky = false;
       return;
     }
+
 
     var prev = _$(_prev_screen.name)[0];
     var next = _$(next_screen.name)[0];
