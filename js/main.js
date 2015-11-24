@@ -28,14 +28,14 @@ var zeroFill = function(n) {
 
 var getStream = function() {
   return new Promise(function(resolve, reject) {
-    var isWebkit = typeof navigator.webkitGetUserMedia === 'function';
-    var isMoz    = typeof navigator.mozGetUserMedia === 'function';
+    var isWebkit = typeof window.navigator.webkitGetUserMedia === 'function';
+    var isMoz    = typeof window.navigator.mozGetUserMedia === 'function';
 
     if(isWebkit || isMoz) {
-      navigator.getUserMedia = window.mozGetUserMedia || navigator.webkitGetUserMedia
+      window.navigator.getUserMedia = window.navigator.mozGetUserMedia || window.navigator.webkitGetUserMedia
     }
 
-    navigator.getUserMedia(
+    window.navigator.getUserMedia(
       {
         video: true,
         audio: false
@@ -55,10 +55,20 @@ var streamToCanvas = function(stream) {
     var video  = _$('#video')[0]
     var canvas = _$('#qr-canvas')[0];
     var gc     = canvas.getContext('2d');
-
     gc.clearRect(0, 0, 256, 192);
 
-    video.src = window.webkitURL.createObjectURL(stream);
+    window.URL = URL || webkitURL;
+
+    if(video.mozSrcObject) {
+      video.mozSrcObject = stream;
+    }
+    else if(window.URL) {
+      video.src = URL.createObjectURL(stream);
+    }
+    else {
+      video.src = window.webkitURL.createObjectURL(stream);
+    }
+
     video.play();
 
     resolve({
@@ -79,16 +89,14 @@ var capture = function(option) {
 
     try{
       var code = qrcode.decode();
-      _$('#scan_screen textarea')[0].value = code;
 
+      _$('#scan_screen textarea')[0].value = code;
       video.pause();
 
-      setTimeout(function() {
-        handle({
-          name: '#wait_screen'
-        });
-      }, 800);
-      return;
+
+      handle({
+        name: '#wait_screen'
+      });
     }
     catch(e){
       tid = setTimeout(function() {
@@ -121,6 +129,7 @@ var prepareScan = function(screen) {
     capture(option);
   })
   .catch(function(error) {
+    console.log(error)
     capture(error);
   });
 
@@ -182,7 +191,6 @@ var copyToClipboard = function(screen) {
     }
   }
   catch(error) {
-    return state;
   }
 
   return state;
@@ -213,13 +221,6 @@ var onMessage = function(request, ws) {
   }
 };
 
-var closeWebSocket = function(options, ws) {
-  _$('#textarea_error')[0].value = 'Connection closed';
-  handle({
-    name: '#error_screen'
-  });
-};
-
 var onTimeout = function(ws) {
   _$('#textarea_error')[0].value = 'Connection timed out';
   handle({
@@ -232,9 +233,8 @@ var createWebSocket = function(request) {
   var uri      = 'wss://ortclip.herokuapp.com';
   var ws       = new WebSocket(uri, protocol);
 
-  request.tid = setTimeout(onTimeout, 24000);
+//  request.tid = setTimeout(onTimeout, 24000);
 
-  ws.addEventListener('close',   closeWebSocket(request, ws));
   ws.addEventListener('open',    onOpen(request, ws));
   ws.addEventListener('message', onMessage(request, ws));
 };
