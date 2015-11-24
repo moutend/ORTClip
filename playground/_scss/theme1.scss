@@ -47,12 +47,12 @@ h1.logo {
   padding: .125em .2em;
   padding-right: .4em;
   line-height: 112%;
-  margin: .5em 0;
+  margin: .25em 0;
   font-family: "Arial Black", Gadget, sans-serif;
   color: #FFF;
   background-color: #910;
   text-align: center;
-  transform: scaleY(1.1);
+  transform: scaleY(1.2);
   letter-spacing: -0.085em;
   border-radius: .125em;
 }
@@ -211,6 +211,7 @@ h1.logo {
 
 #video {
   display: block;
+  background-color: #333;
   margin: .5em auto;
   border: solid .125em #333;
   border-radius: .25em;
