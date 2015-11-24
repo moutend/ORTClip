@@ -3,6 +3,7 @@
 var _$ = function(querry) {
   return document.querySelectorAll(querry);
 }
+
 var createHash = function(length) {
   return new Array(length)
   .fill(0)
@@ -27,8 +28,14 @@ var zeroFill = function(n) {
 
 var getStream = function() {
   return new Promise(function(resolve, reject) {
-    window.navigator.getUserMedia = window.getUserMedia || navigator.webkitGetUserMedia
-    window.navigator.getUserMedia(
+    var isWebkit = typeof navigator.webkitGetUserMedia === 'function';
+    var isMoz    = typeof navigator.mozGetUserMedia === 'function';
+
+    if(isWebkit || isMoz) {
+      navigator.getUserMedia = window.mozGetUserMedia || navigator.webkitGetUserMedia
+    }
+
+    navigator.getUserMedia(
       {
         video: true,
         audio: false
@@ -41,16 +48,18 @@ var getStream = function() {
       }
     )
   })
-}
+};
 
 var streamToCanvas = function(stream) {
   return new Promise(function(resolve, reject) {
-    var c = _$('#qr-canvas')[0];
-    var gc = c.getContext("2d");
-    var video = _$('#video')[0]
+    var video  = _$('#video')[0]
+    var canvas = _$('#qr-canvas')[0];
+    var gc     = canvas.getContext('2d');
 
     gc.clearRect(0, 0, 256, 192);
+
     video.src = window.webkitURL.createObjectURL(stream);
+    video.play();
 
     resolve({
       gc: gc,
@@ -60,28 +69,49 @@ var streamToCanvas = function(stream) {
 };
 
 var capture = function(option) {
-  try{
-    var video = option.video;
-    var gc = option.gc;
+  var video = option.video;
+  var gc = option.gc;
+  var tid = null;
+  var interval = 200;
 
+  try{
     gc.drawImage(video, 0, 0, 256, 192);
 
     try{
       var code = qrcode.decode();
       _$('#scan_screen textarea')[0].value = code;
-      handle('#wait_screen');
+
+      video.pause();
+
+      setTimeout(function() {
+        handle({
+          name: '#wait_screen'
+        });
+      }, 800);
+      return;
     }
     catch(e){
-      window._tid = setTimeout(function() {
+      tid = setTimeout(function() {
         capture(option);
-      }, 250);
+      }, interval);
     };
   }
   catch(e){
-    window._tid = setTimeout(function() {
+    tid = setTimeout(function() {
       capture(option);
-    }, 250);
+    }, interval);
   };
+
+  handle({
+    state: {
+      tid: tid
+    }
+  });
+};
+
+var clearCapture = function(state) {
+  clearTimeout(state.tid);
+  return state;
 };
 
 var prepareScan = function(state) {
@@ -101,21 +131,13 @@ var scanCode = function(state) {
   var code = _$('#textarea_code')[0].value
   var onresponse = function(response) {
     _$('#textarea_response_message')[0].value = response.message;
-    handle('#get_screen');
+    handle({
+      name: '#get_screen'
+    });
   }
 
-
-
-
-
-
-
-
-
-
-
   if(code === '') {
-    state.isRefused = true;
+    state.isSticky = true;
     return state;
   }
 
@@ -133,10 +155,10 @@ var scanCode = function(state) {
 };
 
 var copyToClipboard = function(state) {
-  var t = _$(state.currentScreenName+ ' textarea')[0];
+  var t = _$(state.name+ ' textarea')[0];
   var ios = /iPad|iPhone|iPod/.test(navigator.platform);
 
-  state.isRefused = true;
+  state.isSticky = true;
 
   if(ios || typeof window.ontouchstart === 'object') {
     t.focus();
@@ -157,7 +179,9 @@ var copyToClipboard = function(state) {
     }
   }
   catch(error) {
-    handle('#error_screen');
+    handle({
+      name: '#error_screen'
+    });
   }
 
   return state;
@@ -178,7 +202,9 @@ var onMessage = function(request, ws) {
 
     if(!response.isOK) {
       _$('#textarea_error')[0].value = JSON.stringify(response.message);
-      handle('#error_screen');
+      handle({
+        name: '#error_screen'
+      });
       return;
     }
 
@@ -188,12 +214,16 @@ var onMessage = function(request, ws) {
 
 var closeWebSocket = function(options, ws) {
   _$('#textarea_error')[0].value = 'Connection closed';
-  handle('#error_screen');
+  handle({
+    name: '#error_screen'
+  });
 };
 
 var onTimeout = function(ws) {
   _$('#textarea_error')[0].value = 'Connection timed out';
-  handle('#error_screen');
+  handle({
+    name: '#error_screen'
+  });
 };
 
 var createWebSocket = function(request) {
@@ -231,12 +261,14 @@ var sendMessage = function(state) {
         height: 160
       });
 
-      handle('#send_screen');
+      handle({
+        name: '#send_screen'
+      });
     };
   })(hash);
 
   if(message === '') {
-    state.isRefused = true;
+    state.isSticky = true;
     return state;
   }
 
@@ -250,76 +282,97 @@ var sendMessage = function(state) {
   return state;
 };
 
-var handle = (function() {
-  var _state = {
-    currentScreenName: '#welcome_screen',
-    isRefused: false
-  };
-  var _screens = {
-    '#welcome_screen': {
-      '#edit_screen': {},
-      '#scan_screen': prepareScan
-    },
-    '#edit_screen': {
-      '#welcome_screen': {},
-      '#wait_screen': sendMessage
-    },
+var screens = {
+  '#welcome_screen': {
+    '#edit_screen': {},
     '#scan_screen': {
-      '#welcome_screen': {},
-      '#wait_screen': scanCode
+      fn: prepareScan
+    }
+  },
+  '#edit_screen': {
+    '#welcome_screen': {},
+    '#wait_screen': {
+      fn: sendMessage
+    }
+  },
+  '#scan_screen': {
+    '#welcome_screen': {
+      fn: clearCapture,
     },
     '#wait_screen': {
-      '#send_screen': {},
-      '#get_screen': {},
-      '#error_screen': {}
-    },
-    '#get_screen': {
-      '#welcome_screen': {},
-      'copy': copyToClipboard
-    },
-    '#send_screen': {
-      '#welcome_screen': {},
-      'copy': copyToClipboard
-    },
-    '#error_screen': {
-      '#welcome_screen': {}
+      fn: scanCode
     }
+  },
+  '#wait_screen': {
+    '#send_screen': {},
+    '#get_screen': {},
+    '#error_screen': {}
+  },
+  '#get_screen': {
+    '#welcome_screen': {},
+    'copy': {
+      fn: copyToClipboard,
+      isSticky: true
+    }
+  },
+  '#send_screen': {
+    '#welcome_screen': {},
+    'copy': {
+      fn: copyToClipboard,
+      isSticky: true
+    }
+  },
+  '#error_screen': {
+    '#welcome_screen': {}
+  }
+};
+
+var handle = (function(screens) {
+  var _prev_screen = {
+    name: '#welcome_screen',
+    state: {}
   };
 
-  return function(next_screen_name) {
-    var screen = _screens[_state.currentScreenName][next_screen_name]
-    if(typeof screen === 'undefined') {
+  return function(next_screen) {
+    if(typeof next_screen.name === 'undefined') {
+      next_screen.name = _prev_screen.name;
+    }
+
+    if(typeof next_screen.state === 'undefined') {
+      next_screen.state = _prev_screen.state;
+    }
+
+    var s = screens[_prev_screen.name][next_screen.name] || {};
+
+    if(typeof s.fn === 'function') {
+      _prev_screen.state = s.fn(_prev_screen.state);
+    }
+
+    if(_prev_screen.state.isSticky) {
+     _prev_screen.state.isSticky = false;
       return;
     }
 
-    if(typeof screen === 'function') {
-      _state = screen(_state);
-    }
-
-    if(_state.isRefused) {
-      _state.isRefused = false;
-      return;
-    }
-
-
-    var prev = _$(_state.currentScreenName)[0];
-    var next = _$(next_screen_name)[0];
+    var prev = _$(_prev_screen.name)[0];
+    var next = _$(next_screen.name)[0];
 
     prev.style.display = "none";
     prev.className = prev.className.replace(/ animate-fade-in/g, '');
     next.style.display = "block";
     next.className += " animate-fade-in";
 
-    _state.currentScreenName = next_screen_name;
+    _prev_screen = next_screen;
   };
-})();
+})(screens);
 
 window.onload = function() {
   Array.prototype.map.call(
     _$('button'),
     function(button) {
       button.addEventListener('click', function() {
-        handle(button.className);
+        handle({
+          name: button.className
+        });
       });
     }
   );
