@@ -27,7 +27,13 @@ var zeroFill = function(n) {
 };
 
 var getStream = function() {
+  var _stream = null;
+
   return new Promise(function(resolve, reject) {
+    if(_stream) {
+      resolve(_stream);
+    }
+
     var isWebkit = typeof window.navigator.webkitGetUserMedia === 'function';
     var isMoz    = typeof window.navigator.mozGetUserMedia === 'function';
 
@@ -41,6 +47,7 @@ var getStream = function() {
         audio: false
       },
       function(stream) {
+        _stream = stream;
         resolve(stream)
       },
       function(err) {
