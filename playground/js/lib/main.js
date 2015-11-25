@@ -26,37 +26,39 @@ var zeroFill = function(n) {
         : n;
 };
 
-var getStream = function() {
+var getStream = (function() {
   var _stream = null;
 
-  return new Promise(function(resolve, reject) {
-    if(_stream) {
-      resolve(_stream);
-      return;
-    }
-
-    var isWebkit = typeof window.navigator.webkitGetUserMedia === 'function';
-    var isMoz    = typeof window.navigator.mozGetUserMedia === 'function';
-
-    if(isWebkit || isMoz) {
-      window.navigator.getUserMedia = window.navigator.mozGetUserMedia || window.navigator.webkitGetUserMedia
-    }
-
-    window.navigator.getUserMedia(
-      {
-        video: true,
-        audio: false
-      },
-      function(stream) {
-        _stream = stream;
-        resolve(stream)
-      },
-      function(err) {
-        reject(err)
+  return function() {
+    return new Promise(function(resolve, reject) {
+      if(_stream) {
+        resolve(_stream);
+        return;
       }
-    )
-  })
-};
+
+      var isWebkit = typeof window.navigator.webkitGetUserMedia === 'function';
+      var isMoz    = typeof window.navigator.mozGetUserMedia === 'function';
+
+      if(isWebkit || isMoz) {
+        window.navigator.getUserMedia = window.navigator.mozGetUserMedia || window.navigator.webkitGetUserMedia
+      }
+
+      window.navigator.getUserMedia(
+        {
+          video: true,
+          audio: false
+        },
+        function(stream) {
+          _stream = stream;
+          resolve(stream)
+        },
+        function(err) {
+          reject(err)
+        }
+      )
+    })
+  };
+})();
 
 var streamToCanvas = function(stream) {
   return new Promise(function(resolve, reject) {
