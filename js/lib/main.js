@@ -32,6 +32,7 @@ var getStream = function() {
   return new Promise(function(resolve, reject) {
     if(_stream) {
       resolve(_stream);
+      return;
     }
 
     var isWebkit = typeof window.navigator.webkitGetUserMedia === 'function';
