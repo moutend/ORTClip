@@ -129,7 +129,6 @@ var prepareScan = function(screen) {
     capture(option);
   })
   .catch(function(error) {
-    console.log(error)
     capture(error);
   });
 
